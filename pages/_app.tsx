@@ -1,6 +1,24 @@
 import "@/styles/globals.css";
 import type { AppProps } from "next/app";
+import { Quicksand } from "next/font/google";
+import { UserProvider } from '@auth0/nextjs-auth0/client';
+import {NextUIProvider} from "@nextui-org/react";
+const quickSand = Quicksand({subsets: ['latin']})
+import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
+
+const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
-  return <Component {...pageProps} />;
+  
+  return (
+     <QueryClientProvider client={queryClient}>
+    <NextUIProvider>
+    <UserProvider>
+       <div className={quickSand.className}> 
+      <Component {...pageProps} />      
+    </div>
+    </UserProvider>
+    </NextUIProvider>
+    </QueryClientProvider>
+  );
 }
