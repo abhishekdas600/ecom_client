@@ -1,4 +1,3 @@
-
 import { Fragment, useCallback } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
@@ -6,14 +5,11 @@ import Image from 'next/image';
 import { useCurrentUser } from '@/hooks/user';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
-import FeedCard from '@/layout/card';
-import { ProductsInterface, useGetProducts } from '@/hooks/items';
 
 
-interface HomeProps{
-  products? : ProductsInterface[]
+interface EcomLayoutProps{
+   children: React.ReactNode,
 }
-
 
 const navigation = [
   { name: 'Dashboard', href: '#', current: true },
@@ -28,10 +24,9 @@ function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
 
+const EcomLayout:React.FC<EcomLayoutProps> =(props)=>{
 
-export default function Home(props: HomeProps) {
-  const { user } = useCurrentUser();
-  const { products = props.products as ProductsInterface[] } = useGetProducts();
+  const {user} = useCurrentUser();
   const queryClient = useQueryClient()
 
   const handleSignout = useCallback(async()=>{
@@ -46,25 +41,27 @@ export default function Home(props: HomeProps) {
   },[queryClient])
 
   const userNavigation = [
-    { name: 'Your Profile', href: '/profile' },
+    { name: 'Your Profile', href: '#' },
     
     { name: 'Sign out', onClick:handleSignout },
   ]
   
- 
 
   
 
 
   
     return(
-      <div>
-       <div className="min-h-full">
+        <div className="min-h-full">
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
               <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="flex h-16 items-center justify-between ">
+                  <div className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
+                              'rounded-md px-3 py-2 text-sm font-medium'">
+                   <Link href= "/">Home</Link>
+                  </div>
                   <div className="flex items-center  w-96">
                     
                     <div className="hidden md:block w-full ">
@@ -169,7 +166,7 @@ export default function Home(props: HomeProps) {
                 <div className="border-t border-gray-700 pb-3 pt-4">
                   <div className="flex items-center px-5">
                     <div className="flex-shrink-0">
-                      <p>{user?.firstName} </p>
+                      <p>{user?.firstName} {user?.lastName}</p>
                     </div>
                     <div className="ml-3">
                       <div className="text-base font-medium leading-none text-white">{user?.firstName}</div>
@@ -205,17 +202,10 @@ export default function Home(props: HomeProps) {
 
        
         
-        <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8   ">
-  <div className=' flex flex-wrap gap-3  w-full h-full '> 
-  {products?.map((product: ProductsInterface) => product && <FeedCard key={product.id} data={product} />)}
-   
-  </div>
-  
- 
-</div>
-          
+          <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8">{props.children}</div>
+        
       </div> 
-      
-      </div>
-  )
+    )
 }
+
+export default EcomLayout;

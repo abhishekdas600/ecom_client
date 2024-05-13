@@ -1,11 +1,12 @@
 import axiosInstance from "@/clients/api";
 import { useCurrentUser } from "@/hooks/user";
+import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
 import { useCallback, useEffect, useState } from "react";
 
 
-export default function ForgotPasswordPage(){
+const ForgotPasswordPage: NextPage=()=>{
     const{user}= useCurrentUser()
     const router = useRouter();
     const [email, setEmail] = useState('');
@@ -64,7 +65,7 @@ export default function ForgotPasswordPage(){
               value={email}
               onChange={(e) => setEmail(e.target.value)}
               required
-              className="block w-full rounded-md border-0 py-1.5 pl-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
+              className="block w-full rounded-md border-0 py-1.5 pl-1 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
             />
           </div>
         </div>
@@ -93,3 +94,5 @@ export default function ForgotPasswordPage(){
         </div>
     )
 }
+
+export default ForgotPasswordPage;

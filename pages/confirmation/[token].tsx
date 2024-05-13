@@ -8,7 +8,7 @@ interface ConfirmEmailProps {
   token: string;
 }
 
-  const ConfirmEmail: React.FC<ConfirmEmailProps> = ( {token} ) => {
+  const ConfirmEmail: NextPage<ConfirmEmailProps> = ( {token} ) => {
   const router = useRouter();
 
   useEffect(() => {

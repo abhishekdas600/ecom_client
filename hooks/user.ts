@@ -10,17 +10,23 @@ export interface UserInterface{
     profileImageUrl: string,
 }
 
+
 export const useCurrentUser = () => {
     const query = useQuery<UserInterface>({
         queryKey: ['current-user'],
         queryFn: async () => {
-            const response = await axiosInstance.get("/api/user/currentuser");
-            return response.data;
-        }
+            const response =  await  axiosInstance.get("/api/user/currentuser");
+           return response.data;
+            
+        },
+        staleTime: 1000,
+        retry:false,
+        
+       
     });
 
     return {
         ...query,
-        user: query.isSuccess ? query.data : null, 
+        user: query.isSuccess? query.data: null
     };
 };

@@ -1,10 +1,11 @@
 import { useCurrentUser } from "@/hooks/user";
 import { Spinner } from "@nextui-org/react";
+import { NextPage } from "next";
 import { useRouter } from "next/router";
 import { useEffect } from "react";
 
 
-export default function LoadingPage(){
+const LoadingPage:NextPage =()=>{
     
   const router = useRouter()
  
@@ -24,3 +25,4 @@ export default function LoadingPage(){
         </div>
     )
 }
+export default LoadingPage;

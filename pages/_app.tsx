@@ -6,11 +6,13 @@ import {NextUIProvider} from "@nextui-org/react";
 const quickSand = Quicksand({subsets: ['latin']})
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
 
+
 const queryClient = new QueryClient();
 
 export default function App({ Component, pageProps }: AppProps) {
   
   return (
+    
      <QueryClientProvider client={queryClient}>
     <NextUIProvider>
     <UserProvider>
@@ -20,5 +22,6 @@ export default function App({ Component, pageProps }: AppProps) {
     </UserProvider>
     </NextUIProvider>
     </QueryClientProvider>
+    
   );
 }

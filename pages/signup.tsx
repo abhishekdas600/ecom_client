@@ -1,5 +1,7 @@
 import axiosInstance from "@/clients/api";
 import { useCurrentUser } from "@/hooks/user";
+import EcomLayout from "@/layout/EcomLayout";
+import { NextPage } from "next";
 
 
 import Link from "next/link";
@@ -9,7 +11,7 @@ import { useCallback, useEffect,  useState } from "react";
 
 
 
-export default function SignupPage(){
+  const SignupPage: NextPage=() =>{
 
   const [firstName, setFirstName]= useState('');
   const [lastName, setLastName] = useState('');
@@ -62,7 +64,8 @@ export default function SignupPage(){
 
   return(
     <div>
-        <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
+      
+       <div className="flex min-h-full flex-1 flex-col justify-center px-6 py-12 lg:px-8">
         <div className="sm:mx-auto sm:w-full sm:max-w-sm">
           
           <h2 className="mt-10 text-center text-2xl font-bold leading-9 tracking-tight text-gray-900">
@@ -78,6 +81,7 @@ export default function SignupPage(){
               </label>
               <div className="mt-2">
                 <input
+                
                   id="firstName"
                   name="firstName"
                   type="text"
@@ -187,6 +191,9 @@ export default function SignupPage(){
           </p>
         </div>
       </div>
+      
     </div>
   )
 }
+
+export default SignupPage;
