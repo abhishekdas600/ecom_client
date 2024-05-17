@@ -1,11 +1,14 @@
 import axiosInstance from "@/clients/api";
-import { ProductsInterface } from "@/hooks/items";
+import { ProductsInterface } from "@/hooks/user";
 import EcomLayout from "@/layout/EcomLayout";
 import { GetServerSideProps, NextPage } from "next";
 import Image from "next/image";
-import { useState } from 'react'
+import { useCallback, useState } from 'react'
 import { StarIcon } from '@heroicons/react/20/solid'
 import { RadioGroup } from '@headlessui/react'
+import { useCurrentUser, useGetCart } from "@/hooks/user";
+import { CartLayoutInteface } from "@/hooks/user";
+
 
 interface ProductProps {
   productInfo: ProductsInterface;
@@ -16,6 +19,39 @@ interface ProductProps {
 
 const ProductPage: NextPage<ProductProps> = (props) => {
   
+  const {user} = useCurrentUser()
+  const {cart } = useGetCart()
+  const isProductInCart = cart ? cart.some((product: CartLayoutInteface) => product.item.id === props.productInfo.id) : false;
+  const [count, setCount] = useState(1);
+
+  const increment = () => {
+    setCount(count + 1);
+  };
+
+  const decrement = () => {
+    if (count > 1) {
+      setCount(count - 1);
+    }
+  };
+
+  const handleAddToCart = useCallback(async () => {
+    if (!user || !props.productInfo) {
+      return;
+    }
+    if (cart?.find((product : CartLayoutInteface) => product.item.id === props.productInfo.id)) {
+      
+      return;
+    }
+    try {
+      await axiosInstance.post('/api/user/addtocart', {
+        itemId: `${props.productInfo.id}`,
+        quantity: count
+      });
+    } catch (error) {
+      console.error(error);
+    }
+  }, [cart, count, props.productInfo, user]);
+
 
   return (<div>
             <EcomLayout>
@@ -47,17 +83,39 @@ const ProductPage: NextPage<ProductProps> = (props) => {
             <p className="text-3xl tracking-tight text-gray-900">${props.productInfo.price}</p>
 
            
-           
+        {  user &&  <div className="flex items-center ">
+      <button
+       disabled={isProductInCart}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-l"
+        onClick={decrement}
+      >
+        -
+      </button>
+      
+      <span className="bg-gray-200 py-2 px-4">{count}</span>
+      <button
+       disabled={isProductInCart}
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded-r"
+        onClick={increment}
+      >
+        +
+      </button>
+    </div>}
 
             <form className="mt-10">
              
 
-              <button
-                type="submit"
-                className="mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
-              >
-                Add to bag
-              </button>
+            {user && (
+  <button
+    onClick={handleAddToCart}
+    type="submit"
+    className={`mt-10 flex w-full items-center justify-center rounded-md border border-transparent bg-indigo-600 px-8 py-3 text-base font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2 ${isProductInCart ? 'cursor-not-allowed opacity-50' : ''}`}
+    disabled={isProductInCart}
+  >
+    {isProductInCart ? "Already in Cart" : "Add to Bag"}
+  </button>
+   
+)}
             </form>
           </div>
 

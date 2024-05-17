@@ -1,13 +1,42 @@
 
-import { Fragment, useCallback } from 'react'
-import { Disclosure, Menu, Transition } from '@headlessui/react'
+import { Fragment, useCallback, useState } from 'react'
+import { Disclosure, Menu, Dialog, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image';
-import { useCurrentUser } from '@/hooks/user';
+import { CartLayoutInteface, ProductsInterface, useCurrentUser, useGetCart } from '@/hooks/user';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
 import FeedCard from '@/layout/card';
-import { ProductsInterface, useGetProducts } from '@/hooks/items';
+import {  useGetProducts } from '@/hooks/items';
+import { FiShoppingCart } from "react-icons/fi"
+import { GetServerSideProps } from 'next';
+import axiosInstance from '@/clients/api';
+import Cart from '@/layout/cart';
+
+const products = [
+  {
+    id: 1,
+    name: 'Throwback Hip Bag',
+    href: '#',
+    color: 'Salmon',
+    price: '$90.00',
+    quantity: 1,
+    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
+    imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
+  },
+  {
+    id: 2,
+    name: 'Medium Stuff Satchel',
+    href: '#',
+    color: 'Blue',
+    price: '$32.00',
+    quantity: 1,
+    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
+    imageAlt:
+      'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
+  },
+  // More products...
+]
 
 
 interface HomeProps{
@@ -24,6 +53,7 @@ const navigation = [
 ]
 
 
+
 function classNames(...classes: string[]) {
   return classes.filter(Boolean).join(' ')
 }
@@ -31,8 +61,9 @@ function classNames(...classes: string[]) {
 
 export default function Home(props: HomeProps) {
   const { user } = useCurrentUser();
-  const { products = props.products as ProductsInterface[] } = useGetProducts();
+  
   const queryClient = useQueryClient()
+  const {cart}= useGetCart()
 
   const handleSignout = useCallback(async()=>{
      
@@ -44,6 +75,8 @@ export default function Home(props: HomeProps) {
         console.error(error);
       }
   },[queryClient])
+
+ 
 
   const userNavigation = [
     { name: 'Your Profile', href: '/profile' },
@@ -60,6 +93,7 @@ export default function Home(props: HomeProps) {
     return(
       <div>
        <div className="min-h-full">
+       
         <Disclosure as="nav" className="bg-gray-800">
           {({ open }) => (
             <>
@@ -93,14 +127,18 @@ export default function Home(props: HomeProps) {
                       {/* Profile dropdown */}
                       
                      <Menu as="div" className="relative ml-3">
+                     
                         <div>
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'">
                             <span className="absolute -inset-1.5" />
                             <span className="sr-only">Open user menu</span>
                             <p >{user?.firstName}</p>
+                            
                           </Menu.Button>
+                         
                         </div>
+                       
                         <Transition
                           as={Fragment}
                           enter="transition ease-out duration-100"
@@ -132,6 +170,10 @@ export default function Home(props: HomeProps) {
                       </Menu>
                      { !user &&<Link className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'" href='/signin'>Sign In</Link>}
+                             {user && <div className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
+                              'rounded-md px-3 py-2 text-sm font-medium'">
+                         <Cart data={cart ?? []} />
+                         </div>}
                     </div>
                   </div>
                   <div className="-mr-2 flex md:hidden">
@@ -207,7 +249,7 @@ export default function Home(props: HomeProps) {
         
         <div className="mx-auto max-w-7xl py-6 sm:px-6 lg:px-8   ">
   <div className=' flex flex-wrap gap-3  w-full h-full '> 
-  {products?.map((product: ProductsInterface) => product && <FeedCard key={product.id} data={product} />)}
+  {props.products?.map((product: ProductsInterface) => product && <FeedCard key={product.id} data={product} />)}
    
   </div>
   
@@ -219,3 +261,12 @@ export default function Home(props: HomeProps) {
       </div>
   )
 }
+export const getServerSideProps: GetServerSideProps<HomeProps> = async (context) => {
+  const allProducts = await axiosInstance.get("/api/item/products")
+  
+  return {
+   props: {
+     products: allProducts.data as ProductsInterface[]
+   },
+  };
+};

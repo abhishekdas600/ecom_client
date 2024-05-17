@@ -2,9 +2,11 @@ import { Fragment, useCallback } from 'react'
 import { Disclosure, Menu, Transition } from '@headlessui/react'
 import { Bars3Icon, BellIcon, XMarkIcon } from '@heroicons/react/24/outline'
 import Image from 'next/image';
-import { useCurrentUser } from '@/hooks/user';
+import { useCurrentUser, useGetCart } from '@/hooks/user';
 import { useQueryClient } from '@tanstack/react-query';
 import Link from 'next/link';
+
+import Cart from './cart';
 
 
 interface EcomLayoutProps{
@@ -28,6 +30,7 @@ const EcomLayout:React.FC<EcomLayoutProps> =(props)=>{
 
   const {user} = useCurrentUser();
   const queryClient = useQueryClient()
+  const {cart} = useGetCart()
 
   const handleSignout = useCallback(async()=>{
      
@@ -129,6 +132,10 @@ const EcomLayout:React.FC<EcomLayoutProps> =(props)=>{
                       </Menu>
                      { !user &&<Link className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'" href='/signin'>Sign In</Link>}
+                                { user && <div className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
+                              'rounded-md px-3 py-2 text-sm font-medium'">
+                         <Cart data={[cart]}  />
+                         </div>}
                     </div>
                   </div>
                   <div className="-mr-2 flex md:hidden">

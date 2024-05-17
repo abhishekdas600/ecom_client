@@ -1,4 +1,5 @@
-import { ProductsInterface, useGetProducts } from "@/hooks/items";
+import {  useGetProducts } from "@/hooks/items";
+import { ProductsInterface } from "@/hooks/user";
 import Image from "next/image";
 import Link from "next/link";
 

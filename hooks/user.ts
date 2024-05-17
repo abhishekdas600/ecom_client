@@ -3,6 +3,22 @@ import axiosInstance from "@/clients/api";
 import { useQuery } from "@tanstack/react-query";
 
 
+export interface ProductsInterface{
+    id: string,
+    title: string,
+    price: number,
+    description: string,
+    category: string,
+    image: string,
+    itemQuantity: string
+ }
+ 
+ export interface CartLayoutInteface{
+     userId : string,
+     itemId : string,
+     quantity: Number,
+     item: ProductsInterface,
+ }
 export interface UserInterface{
     firstName: string,
     lastName: string,
@@ -30,3 +46,17 @@ export const useCurrentUser = () => {
         user: query.isSuccess? query.data: null
     };
 };
+export const useGetCart = () =>{
+    const query = useQuery<CartLayoutInteface[]>({
+        queryKey:['cart'],
+        queryFn: async()=>{
+            const response = await axiosInstance.get<CartLayoutInteface[]>('api/user/cart')
+            return response.data;
+        },
+        retry: false
+    })
+    return {
+        ...query,
+        cart: query.isSuccess? query.data:null,
+    }
+}
