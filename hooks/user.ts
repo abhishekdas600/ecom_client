@@ -14,16 +14,27 @@ export interface ProductsInterface{
  }
  
  export interface CartLayoutInteface{
-     userId : string,
-     itemId : string,
-     quantity: Number,
-     item: ProductsInterface,
+    id: string,
+    title : string,
+    price: number,
+    quantity: number,
+    image: string
  }
 export interface UserInterface{
     firstName: string,
     lastName: string,
     email: string,
     profileImageUrl: string,
+}
+
+export interface AddressLayout{
+    id: string,
+    userId: string,
+    addressLine: string,
+    number: string,
+    district: string,
+    state: string,
+    pincode: number
 }
 
 
@@ -58,5 +69,21 @@ export const useGetCart = () =>{
     return {
         ...query,
         cart: query.isSuccess? query.data:null,
+    }
+}
+
+export const useGetAddresses = ()=>{
+    const query = useQuery<AddressLayout[]>({
+        queryKey: ['address'],
+        queryFn: async()=>{
+            const response = await axiosInstance.get('/api/user/addresses')
+            return response.data
+
+        },
+        retry:false
+    })
+    return {
+        ...query,
+        addresses: query.isSuccess? query.data:null,
     }
 }

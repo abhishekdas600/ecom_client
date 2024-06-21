@@ -3,7 +3,7 @@ import { useCurrentUser } from "@/hooks/user";
 import { NextPage } from "next";
 import Link from "next/link";
 import { useRouter } from "next/router";
-import { useCallback, useEffect, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 
 
 
@@ -15,6 +15,8 @@ const SigninPage: NextPage=()=>{
    const [email, setEmail]= useState('');
    const [password, setPassword]= useState('');
    const [sendData, setSendData]= useState(false)
+   const [showPassword, setShowPassword] = useState(false);
+   const [wrongInput, setWrongInput] = useState(false)
    const router  = useRouter()
    const {user}= useCurrentUser()
    
@@ -36,15 +38,22 @@ const SigninPage: NextPage=()=>{
 
        } catch (error) {
         console.error(error)
+        setWrongInput(true)
        }
    },[email, password, user])
       
+   const togglePasswordVisibility = useCallback(() => {
+    setShowPassword((prevShowPassword) => !prevShowPassword);
+  }, []);
+
     useEffect(()=>{
       if(sendData){
         console.log("the data has been send")
         router.push("/")
       }
     },[router, sendData])
+
+   
   
 
     return(
@@ -58,6 +67,11 @@ const SigninPage: NextPage=()=>{
 
         <div className="mt-10 sm:mx-auto sm:w-full sm:max-w-sm">
           <form className="space-y-6"  method="POST" onSubmit={handleSignin}>
+          {wrongInput && (
+            <p className="text-red-500 text-xs mt-1">
+              Incorrect email or password. Please try again.
+            </p>
+          )}
             <div>
               <label htmlFor="email" className="block text-sm font-medium leading-6 text-gray-900">
                 Email address
@@ -87,17 +101,23 @@ const SigninPage: NextPage=()=>{
                   </Link>
                 </div>
               </div>
-              <div className="mt-2">
+              <div>
+              <div className="mt-2 flex">
                 <input
                   id="password"
                   name="password"
-                  type="password"
+                  type={showPassword ? 'text' : 'password'}
                   value={password}
                   onChange={(e)=> setPassword(e.target.value)}
                   autoComplete="current-password"
                   required
                   className="block w-full rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 px-2"
                 />
+                 <button type="button" className="ml-2 px-3 py-1.5 rounded-md bg-gray-200 text-gray-700 hover:bg-gray-300 focus:outline-none focus:ring-2 focus:ring-gray-400"
+                  onClick={togglePasswordVisibility}>
+          {showPassword ? 'Hide' : 'Show'}
+        </button>
+              </div>
               </div>
             </div>
 

@@ -5,6 +5,7 @@ import { UserProvider } from '@auth0/nextjs-auth0/client';
 import {NextUIProvider} from "@nextui-org/react";
 const quickSand = Quicksand({subsets: ['latin']})
 import {QueryClient, QueryClientProvider} from "@tanstack/react-query"
+import { ChakraProvider } from '@chakra-ui/react'
 
 
 const queryClient = new QueryClient();
@@ -14,6 +15,7 @@ export default function App({ Component, pageProps }: AppProps) {
   return (
     
      <QueryClientProvider client={queryClient}>
+      <ChakraProvider>
     <NextUIProvider>
     <UserProvider>
        <div className={quickSand.className}> 
@@ -21,6 +23,7 @@ export default function App({ Component, pageProps }: AppProps) {
     </div>
     </UserProvider>
     </NextUIProvider>
+    </ChakraProvider>
     </QueryClientProvider>
     
   );

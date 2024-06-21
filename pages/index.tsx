@@ -13,30 +13,7 @@ import { GetServerSideProps } from 'next';
 import axiosInstance from '@/clients/api';
 import Cart from '@/layout/cart';
 
-const products = [
-  {
-    id: 1,
-    name: 'Throwback Hip Bag',
-    href: '#',
-    color: 'Salmon',
-    price: '$90.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-01.jpg',
-    imageAlt: 'Salmon orange fabric pouch with match zipper, gray zipper pull, and adjustable hip belt.',
-  },
-  {
-    id: 2,
-    name: 'Medium Stuff Satchel',
-    href: '#',
-    color: 'Blue',
-    price: '$32.00',
-    quantity: 1,
-    imageSrc: 'https://tailwindui.com/img/ecommerce-images/shopping-cart-page-04-product-02.jpg',
-    imageAlt:
-      'Front of satchel with blue canvas body, black straps and handle, drawstring top, and front zipper pouch.',
-  },
-  // More products...
-]
+
 
 
 interface HomeProps{
@@ -104,18 +81,7 @@ export default function Home(props: HomeProps) {
                     <div className="hidden md:block w-full ">
                     <div className="ml-10 flex items-baseline space-x-8 w-full">
                     <form className="space-y-6 w-80" method="POST">
-    <div className="flex items-center"> 
-        <div className="mt-2 flex items-center mb-1 w-full"> 
-            <input
-                id="search"
-                name="search"
-                type="search"
-                autoComplete='search'
-                className="block w-full rounded-md border-0 py-2 pl-3 pr-2 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6"
-            />
-            <button className="px-2 bg-blue-500 text-white rounded-md text-sm shadow-sm hover:bg-blue-600 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-100 h-7">Search</button>
-        </div>
-    </div>
+    
 </form>
 </div>
                     </div>
@@ -126,7 +92,7 @@ export default function Home(props: HomeProps) {
 
                       {/* Profile dropdown */}
                       
-                     <Menu as="div" className="relative ml-3">
+                     { user && <Menu as="div" className="relative ml-3">
                      
                         <div>
                           <Menu.Button className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
@@ -167,11 +133,10 @@ export default function Home(props: HomeProps) {
                             ))}
                           </Menu.Items>
                         </Transition>
-                      </Menu>
+                      </Menu>}
                      { !user &&<Link className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
                               'rounded-md px-3 py-2 text-sm font-medium'" href='/signin'>Sign In</Link>}
-                             {user && <div className="relative flex max-w-xs items-center rounded-full text-gray-300 hover:bg-gray-700 hover:text-white',
-                              'rounded-md px-3 py-2 text-sm font-medium'">
+                             {user && <div className='p-2'>
                          <Cart data={cart ?? []} />
                          </div>}
                     </div>
